@@ -13,6 +13,7 @@ class Tenant extends Model
 {
     /** @use HasFactory<TenantFactory> */
     use HasFactory;
+
     /**
      * Get the users for the tenant.
      */

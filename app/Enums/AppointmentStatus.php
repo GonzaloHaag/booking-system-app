@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 namespace App\Enums;
 
-enum AppointmentStatus: string 
+enum AppointmentStatus: string
 {
     case PENDING = 'pending';
     case CONFIRMED = 'confirmed';

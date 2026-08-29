@@ -166,3 +166,49 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Do NOT delete tests without approval.
 
 </laravel-boost-guidelines>
+
+# Contexto del proyecto
+
+Voy a construir un SaaS de turnos (booking system) en Laravel, arrancando el código de cero. El objetivo de este proyecto es que me guíes con la documentación oficial de Laravel (y de los paquetes que use: Fortify, Livewire, Flux) para que aprenda a fondo y me convierta en un buen desarrollador Laravel. Vos actuás como guía/QA, no como el que escribe el código.
+
+## Cómo trabajar conmigo
+
+- Respondé siempre en español.
+- No saltes a escribir/implementar código ni entres en modo plan-para-implementar por defecto. La idea es pensar juntos la arquitectura y las decisiones — vos das trade-offs, señalás problemas reales en lo que yo vaya escribiendo, y fundamentás en la documentación oficial (usá search-docs). Yo escribo el código.
+- Si algo requiere escribir algo concreto para avanzar, preguntame primero si lo quiero escribir yo con tu guía o si te pido que lo implementes vos.
+- Nunca interactúes con el repositorio remoto (nada de git push/fetch/pull ni gh).
+
+## Decisiones de arquitectura vigentes
+
+(Actualizado 2026-08-23 — reemplaza decisiones anteriores donde haya conflicto.)
+
+- Multi-tenancy: una sola base de datos, con columna `tenant_id` en cada tabla que pertenezca a un tenant. Desde el arranque, resolver el aislamiento de tenant con un Global Scope (o trait equivalente) en los modelos tenant-scoped, no filtrando `tenant_id` a mano en cada query — es el error de seguridad más común en apps multi-tenant y no queremos dejarlo para después. **Implementado en `Customer` (fail closed vía `booted()`); todavía falta en `Employee` y `Appointment`.**
+- Tenant se identifica por dominio (columna `tenants.domain`), pero esa resolución **todavía no está implementada**. Por ahora, la separación `staff`/`customer` se hace por prefijo de ruta simple (`/staff/*`, `/customer/*`), no por subdominio. Migrar a subdominio se evalúa más adelante, si hace falta.
+- `users` = identidad de autenticación pura: email (único por tenant), password, `role` enum. **Por ahora los roles son `admin, employee, customer` — no existe `superadmin` todavía.** `tenant_id` es obligatorio (NOT NULL) en `users`, porque no hay rol sin tenant por ahora.
+- `employees`: siempre requieren un `User` (login obligatorio, porque necesitan gestionar el negocio). `user_id` obligatorio. **`employees.tenant_id` es una columna propia, duplicada a propósito de `employee->user->tenant_id`** (decisión consciente para facilitar filtrado sin joins, no un error). La consistencia entre ambos `tenant_id` se valida a nivel de aplicación (Action), no a nivel de base de datos — pendiente de implementar esa validación y su test.
+- `Customer::creating` y el Global Scope de `Customer` exigen `auth()->check()` siempre (fail closed: sin usuario autenticado, tiran `AuthenticationException` en vez de devolver datos sin filtrar o crear sin tenant). Es deliberado: no hay excepción para seeders/factories/tests — cualquier código que cree o consulte `Customer` necesita un usuario autenticado en contexto (`actingAs()` en tests, `Auth::login()` en seeders).
+- `customers`: NO requieren login por defecto. `user_id` nullable, `tenant_id` propio y obligatorio (no se puede derivar del user si no existe), y `name`/`phone`/`birthdate` propios en la tabla (no dependen de `users.name`). Dar de alta un cliente desde el panel de staff crea SOLO el registro de `Customer` — nada de cuenta de login.
+- Crear una cuenta de login para un cliente ("invitar al portal") es una acción explícita y separada, no automática al crear el cliente. Cuando se haga: crear el `User` con email real + password random, y disparar `Password::sendResetLink()` (reutiliza las rutas/vistas de reset de Fortify que ya vienen con el starter kit, no hay que armar nada nuevo).
+- El registro público (`Features::registration()` de Fortify) no tiene sentido en este modelo — todo `User` se crea desde un flujo interno (alta de staff o invitación de customer), nunca por auto-registro anónimo. **Todavía sigue habilitado en `config/fortify.php` y roto** (`CreateNewUser` no setea `tenant_id`, que es NOT NULL) — deshabilitarlo queda pendiente a propósito, ver gaps.
+- Lógica de negocio organizada por entidad de dominio, no por área: `Actions/<Entidad>/` en singular (ej. `Actions/Customer/CreateCustomer.php`), porque una Action representa una operación de negocio reusable, no algo atado a una sola pantalla. Los componentes Livewire, en cambio, sí se organizan por área + entidad (`Livewire/Staff/Customers/Create.php`) porque están atados a una pantalla concreta — son convenciones distintas a propósito, no una inconsistencia. Los Form objects de Livewire van planos en `Livewire/Forms/` (sin anidar por área) y se nombran por la entidad sin verbo (`CustomerForm`, no `CreateCustomerForm`), para poder reusarse entre alta y edición como muestra la doc de Livewire.
+- `users.name` en la práctica solo es relevante para roles sin tabla de perfil propia (por ahora, `admin`) — para `customer`/`employee` el nombre real vive en su propia tabla de perfil. Evaluar hacer `users.name` nullable por esto.
+- Autorización con Policies por modelo (CustomerPolicy, EmployeePolicy, etc.), no con checks de rol sueltos repartidos por todos lados — salvo el middleware de gate de área (`staff` vs `customer`), que sí es un check de rol a nivel de ruta y es un caso válido para eso. Cuando se reintroduzca `superadmin`, usar `Gate::before` para que tenga acceso total sin repetir la excepción en cada policy.
+- Separación de rutas/vistas por área: `routes/staff.php` (middleware `staff`, layout con sidebar, pensado para escritorio) y `routes/customer.php` (layout header + bottom-nav, pensado para mobile). Cada archivo de rutas se registra con su propio `require` en `web.php`. Los layouts siguen el patrón ya usado por el starter kit (`layouts/<área>/app.blade.php` + `layouts/<área>/sidebar.blade.php`).
+- Lógica de negocio (ej. "crear un cliente") va en clases de Action planas (estilo `App\Actions\Fortify\CreateNewUser` del starter kit), separadas de los Form objects de Livewire (que solo manejan estado/validación de UI) y de los componentes Livewire (que solo orquestan y manejan feedback visual). Las Actions no dependen de Livewire y se testean directo con Pest.
+- Componentes Livewire: seguir el patrón de dos archivos (clase en app/Livewire + vista en resources/views/livewire) que ya trae el starter kit para Settings/Auth, no el formato de archivo único (SFC) de Livewire 4, para mantener consistencia.
+- Higiene de migraciones: mientras el modelo de datos esté en etapa de diseño (sin datos reales en producción), está bien seguir editando las migraciones `create_*` directamente en vez de acumular migraciones `alter_*`. El corte a migraciones aditivas-solamente es a partir de que haya datos reales que no se puedan perder.
+- El scoping de tenant, las policies de autorización y los middlewares/checks de rol (como `EnsureUserIsStaff`) son código de seguridad: deberían tener tests (Pest) desde que se escriben, no quedar para "después".
+
+## Gaps conocidos, aceptados y pendientes
+
+(No son descubrimientos nuevos si los volvés a ver.)
+
+- Global Scope de aislamiento de tenant: implementado solo en `Customer`. Falta replicarlo en `Employee` y `Appointment`.
+- `CustomerPolicy` no existe todavía y `Livewire\Staff\Customers\Create::save()` no tiene `#[Authorize]` — cualquier `admin`/`employee` autenticado puede crear un `Customer` sin chequeo granular, solo el middleware `staff` grueso lo protege.
+- `Customer`, `Employee`, `Appointment` no tienen `HasFactory` — hace falta para escribir factories/tests de estos modelos.
+- `UserSeeder` tiene `tenant_id => 1` hardcodeado en vez de referenciar el tenant creado por `TenantSeeder` — frágil si cambia el orden de seeders o se corre más de una vez sin `migrate:fresh`.
+- No hay validación de solapamiento de turnos para un mismo empleado (unique constraint solo bloquea duplicados exactos) — mismo problema en `appointments` y en `employees_schedules`.
+- `customers.email` (opcional, para poder invitar al portal después) y hacer `users.name` nullable — decisiones tomadas en el diseño pero todavía no aplicadas al código.
+- `password_reset_tokens` usa `email` como clave primaria global, pero `users.email` es único solo por tenant — riesgo de colisión entre tenants con el mismo email hasta que se resuelva la identificación de tenant por dominio.
+- Middleware `EnsureUserIsStaff` y el `LoginResponse` custom de Fortify (redirect según rol) todavía no tienen test Pest.
+- Los tests (`phpunit.xml`) siguen configurados para SQLite en memoria (`DB_CONNECTION=sqlite`, `DB_DATABASE=:memory:`), pero `pdo_sqlite` no está instalado en el entorno — la app real ya corre con Postgres (`.env`: `DB_CONNECTION=pgsql`). Hay que decidir entre instalar `pdo_sqlite` o pasar los tests a Postgres antes de poder correr la suite. Bloquea escribir tests nuevos hasta que se resuelva.

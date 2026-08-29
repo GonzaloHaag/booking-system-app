@@ -50,7 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => UserRole::class
+            'role' => UserRole::class,
         ];
     }
 
@@ -72,5 +72,21 @@ class User extends Authenticatable
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Determine if the user has a specific role.
+     */
+    public function hasRole(UserRole $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Determine if the user is staff.
+     */
+    public function isStaff(): bool
+    {
+        return $this->hasRole(UserRole::ADMIN) || $this->hasRole(UserRole::EMPLOYEE);
     }
 }
