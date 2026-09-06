@@ -7,7 +7,6 @@ use Livewire\Form;
 
 class CustomerForm extends Form
 {
-    // #[Validate('required|min:3|max:100')]
     #[Validate('required', message: 'El nombre es requerido.')]
     #[Validate('min:3', message: 'El nombre debe tener al menos 3 caracteres.')]
     #[Validate('max:100', message: 'El nombre no puede tener más de 100 caracteres.')]

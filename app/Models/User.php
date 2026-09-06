@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use Database\Factories\UserFactory;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -88,5 +89,26 @@ class User extends Authenticatable
     public function isStaff(): bool
     {
         return $this->hasRole(UserRole::ADMIN) || $this->hasRole(UserRole::EMPLOYEE);
+    }
+
+    /**
+     * The "booted" method of the model.
+     * Creating a new user will automatically set the tenant_id to the authenticated user's tenant_id.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (! auth()->check()) {
+                throw new AuthenticationException('Necesitas estar autenticado para crear un cliente.');
+            }
+            $user->tenant_id = auth()->user()->tenant_id;
+        });
+
+        // static::addGlobalScope(function (Builder $builder) {
+        //     if (! auth()->check()) {
+        //         throw new AuthenticationException('Necesitas estar autenticado para acceder a los clientes.');
+        //     }
+        //     $builder->where('tenant_id', auth()->user()->tenant_id);
+        // });
     }
 }

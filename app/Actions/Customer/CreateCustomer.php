@@ -6,6 +6,7 @@ use App\Models\Customer;
 
 class CreateCustomer
 {
+    /** @param array<string, mixed> $data */
     public function handle(array $data): Customer
     {
         return Customer::create([

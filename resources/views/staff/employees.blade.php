@@ -1,18 +1,26 @@
 <x-layouts::staff.app :title="__('Empleados')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+    <x-slot:buttons>
+        <flux:modal.trigger name="create-employee">
+            <flux:button icon="plus" variant="primary" class="cursor-pointer">Nuevo empleado</flux:button>
+        </flux:modal.trigger>
+        <flux:modal name="create-employee" class="md:w-full">
+            <div class="flex flex-col gap-y-4">
+                <div>
+                    <flux:heading size="lg">Nuevo empleado</flux:heading>
+                    <flux:text class="mt-2">Agrega un nuevo empleado a tu lista.</flux:text>
+                </div>
+                <livewire:staff.employees.create />
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-            </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+        </flux:modal>
+    </x-slot:buttons>
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded">
+        <div class="flex items-center justify-between gap-x-6">
+            <flux:input icon="magnifying-glass" placeholder="Buscar empleado..." class="max-w-2xl" />
+            <div class="flex items-center gap-x-4">
+                <flux:button icon="arrow-down-tray" class="cursor-pointer">Exportar PDF</flux:button>
+                <flux:button icon="arrow-down-tray" class="cursor-pointer">Exportar Excel</flux:button>
             </div>
         </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-        </div>
+        <livewire:staff.employees.index />
     </div>
 </x-layouts::staff.app>

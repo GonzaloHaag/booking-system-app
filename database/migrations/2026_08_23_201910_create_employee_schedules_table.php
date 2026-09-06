@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('end_time');
             $table->foreignId('employee_id')->constrained(table: 'employees')->cascadeOnDelete(); /** Si se borra el empleado, se borran sus horarios */
             $table->timestamps();
-            $table->unique(['employee_id', 'day_of_week', 'start_time', 'end_time'], 'unique_employee_schedule');
+            $table->unique(['employee_id', 'day_of_week'], 'unique_employee_schedule');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees_schedules');
+        Schema::dropIfExists('employee_schedules');
     }
 };
