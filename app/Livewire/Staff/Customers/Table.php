@@ -6,11 +6,11 @@ use App\Models\Customer;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class Index extends Component
+class Table extends Component
 {
     public function render()
     {
-        return view('livewire.staff.customers.index', [
+        return view('livewire.staff.customers.table', [
             'customers' => Customer::with('user')->get(),
         ]);
     }

@@ -21,6 +21,6 @@
                 <flux:button icon="arrow-down-tray" class="cursor-pointer">Exportar Excel</flux:button>
             </div>
         </div>
-        <livewire:staff.employees.index />
+        <livewire:staff.employees.table />
     </div>
 </x-layouts::staff.app>

@@ -14,10 +14,10 @@ class Create extends Component
     public function save(CreateEmployee $action)
     {
         $action->handle($this->form->validate());
-        $this->form->reset();
         $this->dispatch('employee-created');
         Flux::modal('create-employee')->close();
         Flux::toast(text: 'Empleado creado exitosamente', variant: 'success');
+        $this->form->reset();
     }
 
     public function render()

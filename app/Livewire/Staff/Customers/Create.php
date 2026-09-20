@@ -14,10 +14,10 @@ class Create extends Component
     public function save(CreateCustomer $action)
     {
         $action->handle($this->form->validate());
-        $this->form->reset();
         $this->dispatch('customer-created');
         Flux::modal('create-customer')->close();
         Flux::toast(text: 'Cliente creado exitosamente', variant: 'success');
+        $this->form->reset();
     }
 
     public function render()

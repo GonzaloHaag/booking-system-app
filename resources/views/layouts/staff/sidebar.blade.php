@@ -31,6 +31,10 @@
                     :current="request()->routeIs('staff.appointments')" wire:navigate>
                     {{ __('Turnos') }}
                 </flux:sidebar.item>
+                 <flux:sidebar.item icon="wrench-screwdriver" :href="route('staff.services')"
+                    :current="request()->routeIs('staff.services')" wire:navigate>
+                    {{ __('Servicios') }}
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

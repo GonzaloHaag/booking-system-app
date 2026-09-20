@@ -45,4 +45,12 @@ class Tenant extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    /**
+     * Get the services for the tenant.
+     */
+    public function services(): HasMany
+    {
+        return $this->hasMany(Service::class);
+    }
 }

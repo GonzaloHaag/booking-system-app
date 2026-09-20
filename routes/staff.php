@@ -7,4 +7,5 @@ Route::middleware(['auth', 'verified', 'staff'])->group(function () {
     Route::view('/staff/customers', 'staff.customers')->name('staff.customers');
     Route::view('/staff/employees', 'staff.employees')->name('staff.employees');
     Route::view('/staff/appointments', 'staff.appointments')->name('staff.appointments');
+    Route::view('/staff/services', 'staff.services')->name('staff.services');
 });

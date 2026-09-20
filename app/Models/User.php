@@ -92,6 +92,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user is customer.
+     */
+    public function isCustomer(): bool
+    {
+        return $this->hasRole(UserRole::CUSTOMER);
+    }
+
+    /**
      * The "booted" method of the model.
      * Creating a new user will automatically set the tenant_id to the authenticated user's tenant_id.
      */

@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Number;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -29,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
          * Configure preventLazyLoading in development environment to avoid N+1 query issues.
          */
         Model::preventLazyLoading(! $this->app->isProduction());
+        Number::useLocale('es_AR');
+        Number::useCurrency('ARS');
     }
 
     /**

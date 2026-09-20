@@ -6,6 +6,7 @@ use App\Models\Employee;
 
 class CreateOrUpdateEmployeeSchedule
 {
+    /** @param array<string, mixed> $data */
     public function handle(Employee $employee, array $data): void
     {
         foreach ($data['daysOfWeek'] as $dayOfWeek => $schedule) {

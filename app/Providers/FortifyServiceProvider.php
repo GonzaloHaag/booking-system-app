@@ -26,6 +26,9 @@ class FortifyServiceProvider extends ServiceProvider
                 if ($request->user()->isStaff()) {
                     return redirect()->route('staff.dashboard');
                 }
+                if ($request->user()->isCustomer()) {
+                    return redirect()->route('customer.dashboard');
+                }
 
                 return redirect()->route('dashboard');
             }
