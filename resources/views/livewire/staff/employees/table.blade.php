@@ -19,8 +19,8 @@
                 <flux:table.cell>{{ $employee->user->email }}</flux:table.cell>
                 <flux:table.cell>
                     <flux:modal.trigger name="schedule-employee-{{ $employee->id }}">
-                        <flux:button icon="clock" size="sm" class="cursor-pointer" variant="primary" color="zinc"
-                            title="Ver horario" />
+                        <flux:button icon="clock" size="sm" class="cursor-pointer" color="zinc"
+                            title="Ver horario" icon:variant="outline" />
                     </flux:modal.trigger>
                     <flux:modal name="schedule-employee-{{ $employee->id }}" class="md:w-full">
                         <div class="flex flex-col gap-y-6">
@@ -31,10 +31,10 @@
                             <livewire:staff.employees.schedule :employee="$employee" wire:key="schedule-{{ $employee->id }}" />
                         </div>
                     </flux:modal>
-                    <flux:button icon="pencil" size="sm" class="cursor-pointer" variant="primary" color="green"
-                        title="Editar" />
-                    <flux:button icon="trash" size="sm" class="cursor-pointer" variant="primary" color="red"
-                        title="Borrar" />
+                    <flux:button icon="pencil" size="sm" class="cursor-pointer" color="green"
+                        title="Editar" icon:variant="outline" class="text-green-600!" />
+                    <flux:button icon="trash" size="sm" class="cursor-pointer" color="red"
+                        title="Borrar" icon:variant="outline" class="text-red-600!" />
                 </flux:table.cell>
             </flux:table.row>
         @empty

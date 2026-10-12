@@ -2,20 +2,25 @@
 
 namespace App\Models;
 
+use Database\Factories\ServiceFactory;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Number;
 
 #[Fillable(['name', 'description', 'price', 'duration_minutes', 'tenant_id'])]
 class Service extends Model
 {
+    /** @use HasFactory<ServiceFactory> */
+    use HasFactory;
+
     /**
      * The "booted" method of the model.
-     * Creating a new customer will automatically set the tenant_id to the authenticated user's tenant_id.
-     * Also, a global scope is added to ensure that only customers belonging to the authenticated user's tenant are retrieved.
+     * Creating a new service will automatically set the tenant_id to the authenticated user's tenant_id.
+     * Also, a global scope is added to ensure that only services belonging to the authenticated user's tenant are retrieved.
      */
     protected static function booted(): void
     {

@@ -15,8 +15,10 @@
                 <flux:table.cell>{{ $customer->birthdate }}</flux:table.cell>
                 <flux:table.cell>{{ $customer->user?->email ?? 'Sin cuenta' }}</flux:table.cell>
                 <flux:table.cell>
-                    <flux:button icon="pencil" size="sm" class="cursor-pointer" />
-                    <flux:button icon="trash" size="sm" class="cursor-pointer" />
+                    <flux:button icon="pencil" size="sm" class="cursor-pointer" color="green" title="Editar"
+                        icon:variant="outline" class="text-green-600!" />
+                    <flux:button icon="trash" size="sm" class="cursor-pointer" color="red" title="Borrar"
+                        icon:variant="outline" class="text-red-600!" />
                 </flux:table.cell>
             </flux:table.row>
         @empty

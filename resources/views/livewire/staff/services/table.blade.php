@@ -5,7 +5,7 @@
                 <flux:heading size="lg" class="font-medium">{{ $service->name }}</flux:heading>
                 <div class="flex items-center gap-x-1">
                     <flux:modal.trigger name="update-service-{{ $service->id }}">
-                        <flux:button variant="filled" icon="pencil" title="Editar servicio" class="cursor-pointer"></flux:button>
+                        <flux:button variant="outline" color="blue" title="Editar servicio" class="cursor-pointer" size="sm">Editar</flux:button>
                     </flux:modal.trigger>
 
                     <flux:modal name="update-service-{{ $service->id }}" class="md:w-full">
@@ -22,7 +22,7 @@
 
 
                     <flux:modal.trigger name="delete-service-{{ $service->id }}">
-                        <flux:button variant="danger" icon="trash" title="Eliminar servicio" class="cursor-pointer"></flux:button>
+                        <flux:button variant="outline" color="red" title="Eliminar servicio" class="cursor-pointer" size="sm">Eliminar</flux:button>
                     </flux:modal.trigger>
 
                     <flux:modal name="delete-service-{{ $service->id }}" class="min-w-88">

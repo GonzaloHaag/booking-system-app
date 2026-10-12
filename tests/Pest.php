@@ -1,5 +1,9 @@
 <?php
 
+use App\Enums\UserRole;
+use App\Models\Service;
+use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +48,46 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Crea un usuario sin pasar por los eventos del modelo.
+ *
+ * El hook `creating` de User exige un usuario autenticado y le asigna su tenant_id,
+ * pero en un test aún no hay nadie autenticado (o se necesita un tenant distinto).
+ * Muteamos los eventos solo acá, en vez de aflojar el hook del modelo.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createUser(array $attributes = [], ?Tenant $tenant = null): User
 {
-    // ..
+    return User::withoutEvents(
+        fn () => User::factory()
+            ->for($tenant ?? Tenant::factory()->create())
+            ->create($attributes)
+    );
+}
+
+/**
+ * Crea un usuario con el rol indicado y lo autentica.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function actingAsUser(UserRole $role = UserRole::ADMIN, ?Tenant $tenant = null, array $attributes = []): User
+{
+    $user = createUser([...$attributes, 'role' => $role], $tenant);
+
+    test()->actingAs($user);
+
+    return $user;
+}
+
+/**
+ * Crea un servicio de un tenant sin pasar por los eventos del modelo.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createService(Tenant $tenant, array $attributes = []): Service
+{
+    return Service::withoutEvents(
+        fn () => Service::factory()->create([...$attributes, 'tenant_id' => $tenant->id])
+    );
 }
