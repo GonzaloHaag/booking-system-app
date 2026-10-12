@@ -14,7 +14,6 @@
     @endforeach
     <div class="flex">
         <flux:spacer />
-        <flux:button type="submit" variant="primary" wire:loading.attr="disabled" class="cursor-pointer">Guardar horarios
-        </flux:button>
+        <flux:button type="submit" variant="primary" wire:loading.attr="disabled" class="cursor-pointer">Guardar horarios</flux:button>
     </div>
 </form>

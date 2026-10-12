@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Service;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -24,4 +25,12 @@ class ServiceForm extends Form
     #[Validate('integer', message: 'La duración debe ser un número entero.')]
     #[Validate('min:1', message: 'La duración debe ser igual o mayor a 1 minuto.')]
     public string $duration_minutes = '';
+
+    public function setService(Service $service)
+    {
+        $this->name = $service->name;
+        $this->description = $service->description ?? '';
+        $this->price = (string) $service->price;
+        $this->duration_minutes = (string) $service->duration_minutes;
+    }
 }
