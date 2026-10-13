@@ -4,13 +4,16 @@ namespace App\Livewire\Staff\Customers;
 
 use App\Actions\Customer\CreateCustomer;
 use App\Livewire\Forms\CustomerForm;
+use App\Models\Customer;
 use Flux\Flux;
+use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
 class Create extends Component
 {
     public CustomerForm $form;
 
+    #[Authorize('create', Customer::class)]
     public function save(CreateCustomer $action)
     {
         $action->handle($this->form->validate());

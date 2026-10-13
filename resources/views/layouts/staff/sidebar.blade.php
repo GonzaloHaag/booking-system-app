@@ -19,10 +19,12 @@
                     :current="request()->routeIs('staff.dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:sidebar.item>
+                @can('viewAny', \App\Models\Employee::class)
                 <flux:sidebar.item icon="users" :href="route('staff.employees')"
                     :current="request()->routeIs('staff.employees')" wire:navigate>
                     {{ __('Empleados') }}
                 </flux:sidebar.item>
+                @endcan
                 <flux:sidebar.item icon="user" :href="route('staff.customers')"
                     :current="request()->routeIs('staff.customers')" wire:navigate>
                     {{ __('Clientes') }}

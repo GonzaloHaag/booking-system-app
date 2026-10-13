@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Models\Customer;
+use App\Models\Employee;
 use App\Models\Service;
 use App\Models\Tenant;
 use App\Models\User;
@@ -89,5 +91,31 @@ function createService(Tenant $tenant, array $attributes = []): Service
 {
     return Service::withoutEvents(
         fn () => Service::factory()->create([...$attributes, 'tenant_id' => $tenant->id])
+    );
+}
+
+/**
+ * Crea un cliente de un tenant sin pasar por los eventos del modelo.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createCustomer(Tenant $tenant, array $attributes = []): Customer
+{
+    return Customer::withoutEvents(
+        fn () => Customer::factory()->for($tenant)->create($attributes)
+    );
+}
+
+/**
+ * Crea un empleado de un tenant, junto con su usuario, sin pasar por los eventos de los modelos.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createEmployee(Tenant $tenant, array $attributes = []): Employee
+{
+    $user = createUser(['role' => UserRole::EMPLOYEE], $tenant);
+
+    return Employee::withoutEvents(
+        fn () => Employee::factory()->for($tenant)->create([...$attributes, 'user_id' => $user->id])
     );
 }

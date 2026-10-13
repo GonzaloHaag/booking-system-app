@@ -6,6 +6,7 @@ use App\Actions\EmployeeSchedule\CreateOrUpdateEmployeeSchedule;
 use App\Livewire\Forms\EmployeeScheduleForm;
 use App\Models\Employee;
 use Flux\Flux;
+use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
 class Schedule extends Component
@@ -14,6 +15,7 @@ class Schedule extends Component
 
     public Employee $employee;
 
+    #[Authorize('update', 'employee')]
     public function save(CreateOrUpdateEmployeeSchedule $action)
     {
         $action->handle($this->employee, $this->form->validate());

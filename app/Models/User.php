@@ -84,6 +84,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole(UserRole::ADMIN);
+    }
+
+    /**
      * Determine if the user is staff.
      */
     public function isStaff(): bool

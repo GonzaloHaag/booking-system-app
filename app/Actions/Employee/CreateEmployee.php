@@ -14,7 +14,7 @@ class CreateEmployee
     {
         /** No asigno tenant id en user porque ya lo hace el booted de User.
          */
-        $transaction = DB::transaction(function () use ($data): Employee {
+        $employee = DB::transaction(function () use ($data): Employee {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -31,6 +31,6 @@ class CreateEmployee
             ]);
         });
 
-        return $transaction;
+        return $employee;
     }
 }

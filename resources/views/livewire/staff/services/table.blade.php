@@ -17,10 +17,6 @@
                             <livewire:staff.services.update :service="$service" :wire:key="'update-'.$service->id" />
                         </div>
                     </flux:modal>
-
-
-
-
                     <flux:modal.trigger name="delete-service-{{ $service->id }}">
                         <flux:button variant="outline" color="red" title="Eliminar servicio" class="cursor-pointer" size="sm">Eliminar</flux:button>
                     </flux:modal.trigger>

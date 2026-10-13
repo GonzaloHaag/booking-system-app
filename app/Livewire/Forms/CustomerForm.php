@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Customer;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -19,4 +20,11 @@ class CustomerForm extends Form
     #[Validate('string', message: 'El teléfono debe ser una cadena de texto.')]
     #[Validate('max:20', message: 'El teléfono no puede tener más de 20 caracteres.')]
     public string $phone = '';
+
+    public function setCustomer(Customer $customer)
+    {
+        $this->name = $customer->name;
+        $this->birthdate = $customer->birthdate ? $customer->birthdate->format('Y-m-d') : '';
+        $this->phone = $customer->phone ?? '';
+    }
 }
