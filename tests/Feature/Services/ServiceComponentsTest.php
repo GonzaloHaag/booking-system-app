@@ -140,7 +140,7 @@ describe('Table', function () {
 
         Livewire::test(Table::class)->call('delete', $service->id);
 
-        $this->assertModelMissing($service);
+        $this->assertSoftDeleted($service);
     });
 
     test('forbids customers from deleting', function () {

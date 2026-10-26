@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained(table: 'tenants')->restrictOnDelete();
             $table->foreignId('employee_id')->constrained(table: 'employees')->restrictOnDelete();
             $table->foreignId('customer_id')->constrained(table: 'customers')->restrictOnDelete();
+            $table->foreignId('service_id')->constrained(table: 'services')->restrictOnDelete();
             $table->timestamps();
             $table->unique(['employee_id', 'date', 'start_time', 'end_time'], 'unique_appointment');
         });

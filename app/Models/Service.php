@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Number;
 
 #[Fillable(['name', 'description', 'price', 'duration_minutes', 'tenant_id'])]
@@ -16,6 +17,8 @@ class Service extends Model
 {
     /** @use HasFactory<ServiceFactory> */
     use HasFactory;
+
+    use SoftDeletes;
 
     /**
      * The "booted" method of the model.

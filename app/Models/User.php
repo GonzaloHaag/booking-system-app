@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -37,6 +38,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    use SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -89,6 +92,14 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->hasRole(UserRole::ADMIN);
+    }
+
+    /**
+     * Determine if the user is an employee.
+     */
+    public function isEmployee(): bool
+    {
+        return $this->hasRole(UserRole::EMPLOYEE);
     }
 
     /**

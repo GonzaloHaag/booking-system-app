@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('duration_minutes')->default(30);
             $table->foreignId('tenant_id')->constrained(table: 'tenants')->restrictOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

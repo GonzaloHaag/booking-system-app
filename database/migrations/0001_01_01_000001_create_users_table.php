@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained(table: 'tenants')->restrictOnDelete();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
             $table->unique(['email', 'tenant_id'], 'users_email_tenant_id_unique');
         });
 

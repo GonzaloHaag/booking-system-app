@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Models\Appointment;
 use App\Models\Customer;
 use App\Models\Employee;
 use App\Models\Service;
@@ -117,5 +118,17 @@ function createEmployee(Tenant $tenant, array $attributes = []): Employee
 
     return Employee::withoutEvents(
         fn () => Employee::factory()->for($tenant)->create([...$attributes, 'user_id' => $user->id])
+    );
+}
+
+/**
+ * Crea un turno de un tenant (con su empleado, cliente y servicio del mismo tenant) sin pasar por los eventos de los modelos.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createAppointment(Tenant $tenant, array $attributes = []): Appointment
+{
+    return Appointment::withoutEvents(
+        fn () => Appointment::factory()->create([...$attributes, 'tenant_id' => $tenant->id])
     );
 }

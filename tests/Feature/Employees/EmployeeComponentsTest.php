@@ -237,8 +237,8 @@ describe('Table', function () {
 
         Livewire::test(Table::class)->call('delete', $employee->id);
 
-        $this->assertDatabaseMissing('employees', ['id' => $employee->id]);
-        $this->assertDatabaseMissing('users', ['id' => $employee->user_id]);
+        $this->assertSoftDeleted('employees', ['id' => $employee->id]);
+        $this->assertSoftDeleted('users', ['id' => $employee->user_id]);
     });
 
     test('forbids employees and customers from deleting', function (UserRole $role) {

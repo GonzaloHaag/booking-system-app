@@ -111,16 +111,27 @@ describe('UpdateEmployee', function () {
 });
 
 describe('DeleteEmployee', function () {
-    test('deletes the employee, its user and its schedules', function () {
+    test('soft deletes the employee and its user, keeping its schedules', function () {
         $admin = actingAsUser();
         $employee = createEmployee($admin->tenant);
         $employee->schedules()->create(['day_of_week' => 1, 'start_time' => '09:00', 'end_time' => '18:00']);
 
         app(DeleteEmployee::class)->handle($employee);
 
-        $this->assertDatabaseMissing('employees', ['id' => $employee->id]);
-        $this->assertDatabaseMissing('users', ['id' => $employee->user_id]);
-        $this->assertDatabaseEmpty('employee_schedules');
+        $this->assertSoftDeleted('employees', ['id' => $employee->id]);
+        $this->assertSoftDeleted('users', ['id' => $employee->user_id]);
+        $this->assertDatabaseCount('employee_schedules', 1);
+    });
+
+    test('keeps the deleted employee email taken within the tenant', function () {
+        $admin = actingAsUser();
+        $employee = createEmployee($admin->tenant);
+        $email = $employee->user->email;
+
+        app(DeleteEmployee::class)->handle($employee);
+
+        expect(fn () => createUser(['email' => $email, 'role' => UserRole::EMPLOYEE], $admin->tenant))
+            ->toThrow(QueryException::class);
     });
 
     test('does not touch other employees or users', function () {

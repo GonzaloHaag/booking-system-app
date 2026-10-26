@@ -60,5 +60,5 @@ test('deletes a service', function () {
 
     app(DeleteService::class)->handle($service);
 
-    $this->assertModelMissing($service);
+    $this->assertSoftDeleted($service);
 });

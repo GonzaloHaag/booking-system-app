@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('birthdate')->nullable();
             $table->foreignId('user_id')->unique()->constrained(table: 'users')->restrictOnDelete();
             $table->foreignId('tenant_id')->constrained(table: 'tenants')->restrictOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
