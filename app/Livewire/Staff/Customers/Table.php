@@ -5,6 +5,7 @@ namespace App\Livewire\Staff\Customers;
 use App\Actions\Customer\DeleteCustomer;
 use App\Models\Customer;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -19,7 +20,7 @@ class Table extends Component
         Flux::modal("delete-customer-{$id}")->close();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.customers.table', [
             'customers' => Customer::with('user')->orderBy('name')->get(),

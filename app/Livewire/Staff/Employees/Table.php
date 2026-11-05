@@ -5,6 +5,7 @@ namespace App\Livewire\Staff\Employees;
 use App\Actions\Employee\DeleteEmployee;
 use App\Models\Employee;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -19,7 +20,7 @@ class Table extends Component
         Flux::modal("delete-employee-{$id}")->close();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.employees.table', [
             'employees' => Employee::with('user')->orderBy('name')->get(),

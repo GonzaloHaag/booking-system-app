@@ -5,6 +5,7 @@ namespace App\Livewire\Staff\Services;
 use App\Actions\Service\DeleteService;
 use App\Models\Service;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -19,7 +20,7 @@ class Table extends Component
         Flux::modal("delete-service-{$id}")->close();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.services.table', [
             'services' => Service::all(),

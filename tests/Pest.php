@@ -132,3 +132,16 @@ function createAppointment(Tenant $tenant, array $attributes = []): Appointment
         fn () => Appointment::factory()->create([...$attributes, 'tenant_id' => $tenant->id])
     );
 }
+
+/**
+ * Crea un usuario customer con su Customer vinculado y un turno de ese cliente.
+ *
+ * @return array{0: User, 1: Appointment}
+ */
+function createCustomerUserWithAppointment(Tenant $tenant): array
+{
+    $user = createUser(['role' => UserRole::CUSTOMER], $tenant);
+    $customer = createCustomer($tenant, ['user_id' => $user->id]);
+
+    return [$user, createAppointment($tenant, ['customer_id' => $customer->id])];
+}

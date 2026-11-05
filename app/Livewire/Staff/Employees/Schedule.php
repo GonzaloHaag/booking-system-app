@@ -6,6 +6,7 @@ use App\Actions\EmployeeSchedule\CreateOrUpdateEmployeeSchedule;
 use App\Livewire\Forms\EmployeeScheduleForm;
 use App\Models\Employee;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
@@ -37,7 +38,7 @@ class Schedule extends Component
         unset($data);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.employees.schedule');
     }

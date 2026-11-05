@@ -6,6 +6,7 @@ use App\Actions\Employee\UpdateEmployee;
 use App\Livewire\Forms\EmployeeForm;
 use App\Models\Employee;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
@@ -30,7 +31,7 @@ class Update extends Component
         $this->form->setEmployee($employee);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.employees.update');
     }

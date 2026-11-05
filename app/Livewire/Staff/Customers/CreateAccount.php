@@ -6,6 +6,7 @@ use App\Actions\Customer\CreateCustomerAccount;
 use App\Livewire\Forms\CustomerAccountForm;
 use App\Models\Customer;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
@@ -25,7 +26,7 @@ class CreateAccount extends Component
         $this->form->reset();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.customers.create-account');
     }

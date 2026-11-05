@@ -3,20 +3,6 @@
 use App\Enums\UserRole;
 use App\Models\Appointment;
 use App\Models\Tenant;
-use App\Models\User;
-
-/**
- * Crea un usuario customer con su Customer vinculado y un turno de ese cliente.
- *
- * @return array{0: User, 1: Appointment}
- */
-function createCustomerUserWithAppointment(Tenant $tenant): array
-{
-    $user = createUser(['role' => UserRole::CUSTOMER], $tenant);
-    $customer = createCustomer($tenant, ['user_id' => $user->id]);
-
-    return [$user, createAppointment($tenant, ['customer_id' => $customer->id])];
-}
 
 test('any authenticated role can view any appointments', function (UserRole $role) {
     $user = createUser(['role' => $role]);

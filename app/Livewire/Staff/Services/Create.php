@@ -6,6 +6,7 @@ use App\Actions\Service\CreateService;
 use App\Livewire\Forms\ServiceForm;
 use App\Models\Service;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Authorize;
 use Livewire\Component;
 
@@ -23,7 +24,7 @@ class Create extends Component
         $this->form->reset();
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.staff.services.create');
     }
